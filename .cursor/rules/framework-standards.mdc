@@ -1,0 +1,252 @@
+---
+description: Always-on coding standards — imports, apibuilders, logging, safety, wiring, workflow. Obey on every framework change.
+alwaysApply: true
+---
+
+# Framework standards
+
+Before editing framework code: follow the router in **`framework-structure-and-skills.mdc`**, then read **`.cursor/skills/rules-md/SKILL.md`** for locations and wiring patterns. Do not guess file locations, `path.js` exports, or patterns.
+
+---
+
+## Always (every chat)
+
+- **Do not commit** unless the user explicitly asks.
+- **Do not run** scripts or API calls that **create / update / deactivate org data** unless the user explicitly asks to run them. Writing code ≠ permission to execute against an org.
+- When the user corrects a **generic** framework mistake, **update this file** or ask if it should be saved. Script/product one-offs stay in the spec only — see **Out of scope**.
+- **One-time scripts:** If the user says **one-time** / **onetimescript**, put the spec in **`tests/oneTimeScripts/`** (sibling of `tests/API/` and `tests/UI/`). Import from **`../../path.js`**. Point npm at `tests/oneTimeScripts/[name].spec.js`. Never under `tests/API/…` or `tests/UI/…`.
+
+---
+
+## Easy English (chat + comments)
+
+When answering in chat or writing comments in specs/helpers/testData:
+
+- Use short, everyday words. One clear sentence beats a long paragraph.
+- Skip jargon unless the user already used that word. If you need a technical term, explain it right away in plain words.
+- Do not use internal labels (e.g. probe, preflight, isolate, engine) in replies without translating them.
+- Code comments: say **why** in plain English — e.g. “check skills for each job title once”, not codenames.
+- Plans and lists: simple headers and short bullets. Big tables only when the user asked for numbers.
+
+This does not change **`logger.info` / `logger.error`** style for automation runs unless the user asks.
+
+---
+
+## Mental model (how this repo works)
+
+```
+testData (what) → payload (body) → apibuilder (HTTP) → path.js (export)
+                                      ↑
+spec (orchestrates) ← imports only from path.js
+npm script → package.json = Jenkins command = CSV row (same name)
+```
+
+- **Apibuilders** = shared HTTP: call, status check, log, return body.
+- **Specs** = business rules, filtering, orchestration, testData.
+- **`path.js`** = only import surface for specs/helpers.
+
+---
+
+## Simple logic and readable code
+
+### Prefer clear branches over clever overloads
+
+- If behavior depends on an obvious signal (e.g. search **has `@`** vs not), use **two paths**, not one function that tries every trick.
+- **One responsibility per small function.**
+- Avoid unsafe shortcuts (e.g. “if exactly one result, return it”) unless the requirement is explicit.
+
+### Variable names
+
+- Names state meaning: `searchHasAt`, `usersFromResponse`, `rowEmail` — not `q`, `x`, `data2`.
+- Booleans: **`is…` / `has…` / `should…`**.
+- Avoid single-letter loop variables in non-trivial loops.
+- Say **what the value is**, not how it was built. A reader should guess the shape from the name.
+
+**Quick patterns (this repo)**
+
+| Kind of value | Name pattern | Examples |
+|---------------|--------------|----------|
+| List / array | plural noun | `roleNames`, `eligiblePoolLearners`, `chatPeople` |
+| Map / lookup | `…By…` or `…For…` | `skillCountsByRole`, `skillsByName`, `tokensByLogin` |
+| Count / number | what you counted + `Count` | `goalsCreated`, `userCount`, `completeTaskCount` |
+| One person row | `person`, `learner`, `orgUser`, or `loginName` in logs | not `item`, `row`, `u` in non-trivial code |
+| Filtered subset | name the filter | `rolesForPool`, `eligibleForSeed`, `foundDefaultUsers` |
+| Spare / helper account | say the role in the flow | `spareLearner` (skill check only), not `probe`, `testUser` |
+| Log string | what the reader will see | `poolRolesWithSkillCounts`, not `usedWithCounts`, `summaryText` |
+| API body | `…Body` or product term | `dataBody`, `assessmentBody`, not `res`, `json` |
+
+| Avoid | Prefer | Why |
+|--------|--------|-----|
+| `usedWithCounts`, `data2`, `temp` | `poolRolesWithSkillCounts` | Content is roles + counts |
+| `result`, `output`, `info` | `skillCountsByRole`, `pickedLearners` | Says what came back from the step |
+| `x`, `arr`, `obj` | `roleNames`, `learnersWithTokens` | Full words |
+| `item` in a batch loop over people | `person`, `learner` | `for (let person of labeled)` |
+| `n`, `i` when meaning is known | `goalIndex`, `batchIndex`, `mixIndex` | OK for tiny inner loops; not for business steps |
+| `check`, `handle`, `process` verbs as nouns | `discoverRoleSkillCounts`, `ensureProfileAndAssessment` | Functions can be verbs; variables should be nouns |
+| `roles`, `users` when type matters | `allPoolRoles`, `orgUsers`, `poolEligible` | Which list of roles/users |
+
+**Spec / seed examples**
+
+```javascript
+const defaultLoginSet = defaultLoginNamesSet();
+const eligiblePoolLearners = orgUsers.filter((user) => isPoolLearner(user, defaultLoginSet));
+const shuffledEligible = reusableFunctions.shuffleDataInArray(eligiblePoolLearners);
+const spareLearner = (await collectLearnersWithTokens(request, shuffledEligible, 1))[0];
+const eligibleForSeed = shuffledEligible.filter((user) => user.loginName !== spareLearner.loginName);
+const pickedLearners = await collectLearnersWithTokens(request, eligibleForSeed, userCount);
+const skillCountsByRole = await discoverRoleSkillCounts(request, spareLearner, allPoolRoles);
+const rolesForPool = rolesWithSkills(skillCountsByRole, allPoolRoles);
+const poolRolesWithSkillCounts = rolesForPool
+  .map((role) => `${role} (${skillCountsByRole.get(role) || 0})`)
+  .join(", ");
+```
+
+**Search / user lookup examples**
+
+```javascript
+const searchHasAt = searchLower.includes("@");
+const usersFromResponse = body?.users || [];
+const rowEmail = (user.email || "").toLowerCase();
+const hasCompletedProfileAndAssessment =
+  dataBody?.is_profile_completed === true && dataBody?.self_assessment_is_completed === true;
+```
+
+**Apibuilder return (in spec — name the slice you use)**
+
+```javascript
+const goalId = created?.goalId;
+const usersFromOrg = (await getAllUserApi(request, jwt))?.users || [];
+// not: const data = await …; then data.users everywhere without a named pull
+```
+
+### Readability
+
+- Happy path first: normalize → branch → loop.
+- Non-obvious condition → one-line comment on **why**, not what the next line does.
+
+```javascript
+let searchHasAt = searchLower.includes("@");
+for (let user of users) {
+  if (searchHasAt) {
+    if (emailFieldsMatch(user, searchLower)) return user;
+  } else {
+    if (firstLastMatches(user, searchLower)) return user;
+  }
+}
+```
+
+---
+
+## Shared API builders — no spec-specific behavior
+
+**Do not** change shared apibuilder signatures, defaults, filtering, or return shape for one caller.
+
+**Do:** call as documented; filter/map/validate in the **spec** (or a spec-local helper). For a different raw call, small spec helper using **`urlData` / `headerData` / payloads from `path.js`** — do not fork the shared apibuilder.
+
+An apibuilder file only exports the API functions. Do not add other `async` or sync functions in that file. Extra logic belongs in the spec.
+
+Do not add spec-only helpers to shared files (e.g. `responseValidation.js`) unless truly shared by multiple specs.
+
+---
+
+## Imports — one statement from `path.js` only
+
+- Never import from `helpers/API/...` directly in specs/apibuilders.
+- One destructured `import { ... } from "../../../path.js"` (correct relative depth; oneTimeScripts → `../../path.js`).
+- Do not split into multiple import lines from different paths.
+- Do not reformat an existing single-line import to multi-line unless the user asks.
+- New symbol → export from **`path.js` first**, then import.
+
+---
+
+## Comments on helpers and sections
+
+- Section markers: `// ===================== Helper Functions =====================`
+- One-line comment above every helper: **why** / business rule — not “what the next line does.”
+- Match RAS/Admin style (e.g. `riskAndReadinessTimeliness.spec.js`).
+- Comments stay **plain and easy**. Say why in everyday words. Do not overcomplicate or add jargon. Write only for the line or helper in front of you — do not reuse wording from another feature.
+
+---
+
+## Keep code simple
+
+- Match the **simplest existing spec** in the same module folder.
+- Reuse apibuilders and **`reusableFunctions`** before writing new helpers.
+- Generic helpers (dates, uuid) belong on **`reusableFunctions`**. Do not copy them into a spec.
+- Search the repo before inventing a parallel implementation.
+- Prefer small `if / else` or spec-local helper over new shared abstractions.
+- Do not create extra files for one concern — extend existing pieces.
+- **Tags / `--grep`:** only when one spec has multiple selectable tests and npm must run a subset. Single-test specs → no `@tag` / `--grep`.
+
+---
+
+## No duplicate or dead code
+
+- Check the framework already has the helper / payload field / npm command before adding.
+- Remove unused imports and dead helpers when touching an area.
+- Do not copy-paste payload blocks — use fields you actually need.
+
+---
+
+## Logging — human-readable only
+
+- **`logger.info()`** / **`logger.error()`** — short plain English.
+- Do not log raw objects, full API responses, or debug blobs unless the user asks.
+- Do not double-log the same success/failure.
+- **No `console.log`.**
+
+### Choosing the level — `error` means something broke
+
+**`logger.error()` — only when the code or an API actually failed.** Someone reading the log must be able to treat every ERROR line as a thing to go fix.
+
+- The HTTP status check failed (inside the `catch`, in the apibuilder).
+- The call threw: network error, timeout, bad JSON.
+- The script cannot continue and is about to throw.
+
+**`logger.info()` — everything else, including every planned skip.** A skip is not a failure. If the run did exactly what it was designed to do, it is INFO even though a learner got no data.
+
+- Why a user was skipped — not in this org, no token, no matching testData.
+- Why a step was not done — role has no skills in the catalog, no goal created so no chat, group is meant to stop early.
+- An API returned 200 but the body had nothing usable (empty list, missing id). The call worked; the **data** was not there.
+- Retrying, falling back to another value, progress, batch and summary lines.
+
+### Rules that follow from this
+
+- **Log the failure once, at the source.** The apibuilder's `catch` owns the ERROR line. A caller that reacts to it (skips the user, picks another, retries) writes **INFO** describing what it did instead. Do not write ERROR in both places.
+- **Say why, and what happened to that user.** `logger.error("failed")` and `logger.info("skipped")` are useless. Name the person, the step, and the reason: `Alex_7 | group A | Project Manager has no skills in this org's AI Coach catalog — skipped goal 1`.
+- **Write for someone who does not know the feature.** No internal flag names, no status-code dumps, no stack traces.
+- **A clean run should have zero ERROR lines.** Before finishing, re-read every `logger.error` you added and ask: did something break here, or did the script just choose not to do something? If it chose, it is INFO.
+
+---
+
+## Integration checklist (compact)
+
+When adding/removing an API, spec, or npm command — complete all (full steps in **rules-md**):
+
+1. `allUrls.js` / `allHeaders.js` → payload → apibuilder → **`path.js`**
+2. `testData/` → spec (API/UI/oneTimeScripts as appropriate)
+3. **`package.json`** + **`Jenkinsfile`** (alpha) + **`docs/Tracking-all-sites-commands.csv`** — same name string
+4. User-facing docs via **`/sync-docs-with-framework`**
+
+Deleting → also remove `path.js` exports and orphaned scripts.
+
+**Verify:** grep the script name in `package.json`, `Jenkinsfile`, and the CSV.
+
+---
+
+## Implementation workflow
+
+1. **Start:** Router + this file + **rules-md**. Open only needed files.
+2. **Pattern:** Best existing spec in the same module; reuse before inventing.
+3. **Scope:** Product/spec logic in spec or testData. Do not change shared apibuilders or unrelated legacy files unless required.
+4. **Touch = upgrade:** Bring the file you edit up to this standard. Do not drive-by refactor other files.
+5. **Done:** Integration checklist if APIs/commands changed; sync-docs if package/Jenkins/README changed; self-review against this file.
+
+---
+
+## Out of scope (do not turn into permanent rules)
+
+- Feature-specific payload shapes, site UUIDs, audience names, cohort sizes
+- Product behavior debates for one script
+
+Those stay in the spec / testData only.

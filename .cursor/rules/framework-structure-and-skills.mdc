@@ -1,0 +1,56 @@
+---
+description: Always-on router — what to read, source of truth map, skill index. Start every framework task here.
+alwaysApply: true
+---
+
+# Framework structure — agent router
+
+## Source of truth (do not duplicate elsewhere)
+
+| Concern | Canonical place | Notes |
+|--------|-----------------|--------|
+| **Coding rules** (imports, apibuilders, logging, workflow) | `.cursor/rules/framework-standards.mdc` | Always applied |
+| **Where files live + how to wire APIs/commands** | `.cursor/skills/rules-md/SKILL.md` | Read before framework edits |
+| **Runnable command names** | `package.json` `"scripts"` | Must match Jenkins + CSV |
+| **Command descriptions (humans/PM)** | `docs/Tracking-all-sites-commands.csv` | Not a second invent-list in skills |
+| **How to run (onboarding)** | `.cursor/skills/how-to-use-automation/SKILL.md` | People-facing |
+| **Optional agent notes** | `.cursor/AGENTS.md` | Keep short |
+
+**Command sync rule:** same npm script name string in **`package.json`** + **`Jenkinsfile`** (`command` choices, alphabetical) + **CSV**. Verify with grep before done.
+
+## Read order for framework work
+
+1. This file (router) — already on.
+2. **`framework-standards.mdc`** — already on; obey every coding rule.
+3. **`rules-md`** — open and follow for locations, patterns, FileName, integration checklist.
+4. Open **only** the code/testData files the task needs. Do not guess `path.js` exports or folder layout.
+5. After command/docs changes → **`sync-docs-with-framework`**.
+
+Trivial one-line fix in an already-open file: skip deep re-read of rules-md if standards already cover it.
+
+## Skills index
+
+| Skill | Path | Use when |
+|--------|------|----------|
+| **rules-md** | `.cursor/skills/rules-md/SKILL.md` | Any code/framework change (API, UI, script, path.js, wiring) |
+| **how-to-use-automation** | `.cursor/skills/how-to-use-automation/SKILL.md` | Onboarding, how to run local/Jenkins, troubleshooting |
+| **automated-features-summary** | `.cursor/skills/automated-features-summary/SKILL.md` | PPT-style command summary — **must match CSV**, do not invent names |
+| **high-level-scripts-and-features** | `.cursor/skills/high-level-scripts-and-features/SKILL.md` | What a script populates — **must match CSV/package.json** |
+| **sync-docs-with-framework** | `.cursor/skills/sync-docs-with-framework/SKILL.md` | After package.json / Jenkins / README / folder changes |
+
+Invoke: `/rules-md`, `/sync-docs-with-framework`, or other skill names when useful.
+
+## Rules in `.cursor/rules/`
+
+- **`framework-structure-and-skills.mdc`** (this file) — router + SoT + skill index.
+- **`framework-standards.mdc`** — coding standards (always apply).
+- **`ai-coach-dashboard.mdc`** — AI Coach locked plan (one spec + grep). Read this; do not re-mine chats. Open it for any AI Coach work.
+- **`skills-intelligence.mdc`** — Skills Intelligence plan (default-user roles first). Read this; do not re-mine chats. Open it for any Skills Intelligence work.
+
+## Quick pointers (detail lives in rules-md / standards)
+
+- Specs/helpers import **only from `path.js`**.
+- Repeatable API specs → `tests/API/…`; UI → `tests/UI/…`.
+- User says **one-time / onetimescript** → `tests/oneTimeScripts/` (not under API/UI). Import `../../path.js`.
+- New command → Integration checklist in **rules-md** + sync docs.
+- Changing global conventions → update **standards** and/or **rules-md** (and this router if the skill index changes).

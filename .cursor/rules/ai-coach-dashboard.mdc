@@ -1,0 +1,342 @@
+---
+description: >-
+  AI Coach locked plan. One spec + grep tags. Read this instead of chats.
+  Implemented. Do not run org-mutating scripts unless the user asks.
+alwaysApply: false
+globs: "{**/aiCoach*,**/ai-coach*,**/AiCoach*,testData/aiCoach/**,tests/API/RAS/aiCoach*}"
+---
+
+# AI Coach — locked plan
+
+**Implemented** in `tests/API/RAS/aiCoachDashboard.spec.js`. Follow `framework-standards.mdc` + `rules-md`. Do not run org-mutating scripts unless the user asks. This is not CAISY, AI Assistant, or Percipio weekly learning goals.
+
+Chats only if this file is silent: [dashboard](947986f4-b714-4564-816c-1d221fa3a5af) · [APIs](c593d4e5-166e-4632-a455-1f5d1739af13) · [Not started](157ec062-b272-4e82-a09d-a608ef546e9d).
+
+---
+
+## How we run it
+
+One spec: `tests/API/RAS/aiCoachDashboard.spec.js` · import `../../../path.js`. Each npm uses `--grep` (do not run the file with no grep).
+
+| npm                                  | Tag                                        | When                 | Who                                                                                                                                                                                                                              |
+| ------------------------------------ | ------------------------------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enableAiCoachSettings`              | `@aiCoachSettings`                         | Once per org         | Admin only                                                                                                                                                                                                                       |
+| `createDataInAiCoachForDefaultUsers` | `@aiCoachDefaultUsers`                     | Once, rarely         | Names in `defaultUsers.json` that exist. Untouched GET-only. Ready profile+assessment. Full: 3 matched goals, then 2–3 chats + weekly session per chat                                                                           |
+| `createDataInAiCoachDashboard`       | `@aiCoachDashboard`                        | Repeatable           | `USERCOUNT` other Learners (50, 100, 150…). Same N: A–E profile → assessment → goals/tasks (A/D 1 goal, B/C/E 2) → one chat. F GET data only. Profile/goals and chats in batches of 20. **No** scheduled sessions |
+| `fullAiCoachCommand`                 | (run-s of settings + defaults + dashboard) | One Jenkins/npm pass | Default-user chats and pool chats are included                                                                                                                                                                                   |
+
+Same file, three tests. Defaults never go in the `USERCOUNT` pool. Token collect, profile/goals, and pool chats all run in batches of 20. Import only `path.js`. `logger.info` / `logger.error`. No `console.log`. No UUIDs in testData. New AI Coach settings payload + apibuilder — do **not** edit `orgsettingPayload.js` / `orgSettingsApi.js` / `editOrgSettings.spec.js`. Reuse `urlData.orgSettingsUrl` + `orgSettingsHeaders`. Copy/skills live in `testData/aiCoach/`. Then package.json + Jenkins + CSV (same name) + `/sync-docs-with-framework`.
+
+**Tokens:** Admin `generateToken` + `Authorization: Bearer` → API 2 only. Each learner: one `generateTokenLearner` + `percipio-id-token` + `locale: en-US` (`generateJwtTokenHeaders`) → all `/ai-coach/` calls. Do not log JWTs.
+
+**Learner UI order (mandatory):** profile → self-assessment → goals. Before **any** `POST /goals` (API 10), GET API 6 `data` for that learner. Both `is_profile_completed` and `self_assessment_is_completed` must be `true`. If either is not true → log, skip goals **and chat** (do not POST 10). Same gate for default full users and `USERCOUNT` A–E. Profile PUT is skipped when already complete. **Assessment is always PUT** so Q2/Q4 (collaboration/trust and in-your-role) averages stay **above 4.5**. Re-runs still POST goals (they stack). Pool A–E: one chat only after goal+tasks succeed. Goal or task create failed → skip chat for that user. Default full: chats + API 15 only after **at least one** JSON goal was created. Missing skill after that match → skip that goal only, still chat if another goal landed.
+
+**`USERCOUNT`:** only headcount we pass. Must be **50, 100, 150, 200…** (multiple of 50) or fail. Orgs have 1000+ learners; pick N. If eligible is below N → fail. Password from config unless the row has `passWord`. Pool: active, role Learner, `@noemail.com`, not a default login. Skip failed tokens and refill to N.
+
+**Two jobs — do not mix them**
+
+| Who                  | What we optimize for                                                                                                                                                                                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Default users**    | People we **log in as for demos**. Role and goal title must match the JSON row. Full logins post **all 3 JSON goals** (that is why Goals set > Users who set goals). Skill: exact planned name, a catalog name that contains it, another of the 20 names, or last an unused catalog skill so the title still lands. |
+| **`USERCOUNT` pool** | Fills **admin Analytics → AI Coach** only. Rotate job roles. Mix the 20 skill names (and other catalog skills if a role cannot post a planned name). Short goals (`Improve <skill>`). These people are not for walkthroughs.                                                                                        |
+
+Default **self-assessment** (ready + full): Q2/Q4 score **5**; other questions any valid answers — no per-login table. The **`USERCOUNT` mix** is what fills the Assessments charts (those two rating averages stay above 4.5). Random-user goals/roles fill the admin skill table. Default profiles, goals, tasks, and later chats stay matched to that login.
+
+---
+
+## Product (short)
+
+Learner: nine-dot → AI Coach. Admin: Analytics → Dashboard → AI Coach (Summary | Assessments). Filters: date range; audience up to 20. Off until Site Settings → AI Coach Settings. Assessment/pulse questions are not customizable. Feedback invites are **email only**. Pulse is not a dashboard widget this phase. Pulse days in script: **60** (`1` returns 500). We do not PATCH email campaigns.
+
+Performance cycle Home task appears **14 days before** each date. Dates at runtime: **today+14d**, **today+1 month**, and **today+2 months**, `YYYY-MM-DD`, never past or today. Missing day → last day of that month.
+
+`client_id` = AI Coach profile id. One per learner, reuse. GET `data` does not return it. GET profile / GET tasks do. PUT profile sends it. Missing → generate once.
+
+---
+
+## APIs
+
+Base `{baseURL}`. Learner header: `percipio-id-token` + `locale: en-US`. Admin: Bearer.
+
+| #   | Call                                                           | Need                                                                                                                                                                                           | Keep / returns                                                                                            | Fills                                                                                                                 |
+| --- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 1   | `GET /ai-coach/api/user/v1/percipio-job-roles?search=`         | Learner. **search required**                                                                                                                                                                   | `jobRoleName` (goes on profile), `jobRoleUuid`                                                            | Onboarding                                                                                                            |
+| 2   | `PATCH /api/ucm/settings/org-settings`                         | Admin. **AI Coach keys only**                                                                                                                                                                  | —                                                                                                         | Feature on                                                                                                            |
+| 3a  | `GET /ai-coach/api/user/v1/client-profile`                     | Learner                                                                                                                                                                                        | `user_id`, `client_id`, role, three text fields, `isAdminProvidedRole`                                    | Reuse ids                                                                                                             |
+| 3   | `PUT /ai-coach/api/user/v1/client-profile`                     | `user_id`, `client_id`, `job_role` **name**, `key_responsibilities`, `career_aspiration`, `motivation`                                                                                         | `action` (`updated` if existed). Completes **profile** only                                               | Onboarding                                                                                                            |
+| 4   | `GET /ai-coach/api/user/v1/self-assessment`                    | Learner. No `client_id`                                                                                                                                                                        | `assessment_id`, `client_assessment_id`, each `question_id`, `choices`, `max_select`                      | Questions                                                                                                             |
+| 5   | `PUT /ai-coach/api/user/v1/self-assessment`                    | `{ answers: [...] }` only. Copy ids from GET                                                                                                                                                   | Trust API 6 `self_assessment_is_completed` (PUT may still say `in_progress`)                              | Donut **Completed**, Self bars                                                                                        |
+| 6   | `GET /ai-coach/api/user/v1/data`                               | Learner. No body                                                                                                                                                                               | `user_id`, `first_time_login`, `is_profile_completed`, `self_assessment_is_completed`. **No `client_id`** | **Not started** if never PUT 5. Login/profile PUT do not create that slice. 2nd GET flips `first_time_login` to false |
+| 7   | `GET /ai-coach/api/user/v1/client-tasks`                       | Learner                                                                                                                                                                                        | `client_id`, task `id`, slugs                                                                             | Home to-dos only — **not** dashboard “Tasks created”                                                                  |
+| 8   | `POST /ai-coach/api/user/v1/insights-tasks/complete`           | Empty body. **204**                                                                                                                                                                            | —                                                                                                         | Clears “Review new insights”. After every API 5                                                                       |
+| 9   | `GET /ai-coach/api/goals/percipio-role-based-skills`           | After profile                                                                                                                                                                                  | `skills[].id` + `name`. Match **by name**                                                                 | Skill picker                                                                                                          |
+| 10  | `POST /ai-coach/api/goals`                                     | Only after API 6 shows `is_profile_completed` **and** `self_assessment_is_completed` both `true`. Body `{ title, goal_skill_ids: [{ percipio_uuid, name }] }`                                  | `session_goal.goal_id`. Starts `active`                                                                   | Goals set, users with goals                                                                                           |
+| 11  | `POST /ai-coach/api/goals/{goal_id}/tasks`                     | Array `{ title, description, due_date }` future `YYYY-MM-DD`                                                                                                                                   | `task_id`, `pending`                                                                                      | Tasks created                                                                                                         |
+| 12  | `PATCH .../task-status-update/{task_id}`                       | `{ "status": "completed" }`                                                                                                                                                                    | Does **not** achieve the goal                                                                             | Task complete                                                                                                         |
+| 13  | `PATCH .../status-update/{goal_id}`                            | `{ "status": "achieved" }` not `"completed"`                                                                                                                                                   | After **all** tasks on that goal                                                                          | Goals completed, green                                                                                                |
+| 14  | `POST /ai-coach/api/v1/launches/{launch_id}/engagement-blocks` | Learner. After checkpoint. New block `id` per POST. Times + `surfaces: ["chat"]` + `close_reason` (`session_reset` on close)                                                                   | `status: "ok"`, `inserted: true`, `duration_seconds`                                                      | Chat sessions / average conversation time                                                                             |
+| 15  | `POST /ai-coach/api/v1/coaching-sessions`                      | Learner. After that chat is closed. `{ scheduled_at_local, scheduling_timezone, duration_minutes, recurrence, recurrence_weekday, recurrence_end_date }`. Referer `/ai-coach/chat/{launch_id}` | `id`, `status: "scheduled"`                                                                               | Learner calendar on that chat. **Full default users only**, one session **per chat we just closed**                   |
+| 16  | `PATCH /ai-coach/api/v1/coaching-sessions/{id}`                | Same body shape as 15. `id` from POST                                                                                                                                                          | `status: "rescheduled"`, `rescheduled_at`                                                                 | Do **not** PATCH in seed                                                                                              |
+| 17  | `POST /ai-coach/api/v1/chat/stream`                            | Learner. `Accept: text/event-stream`. First body `launch_id: null`. Later turns reuse the id. `page_context.route_id` = `chat_free`                                                            | SSE tokens + done. Parse `launch_id` / assistant text                                                     | Creates the launch and the conversation                                                                               |
+| 18  | `GET /ai-coach/api/v1/launches?limit=30`                       | Learner                                                                                                                                                                                        | Existing launch ids                                                                                       | Snapshot / recover `launch_id` if SSE omitted it                                                                      |
+| 19  | `GET /ai-coach/api/v1/launches/{launch_id}/session-notes`      | Learner. After turns                                                                                                                                                                           | Session notes                                                                                             | Sync; topics if the product derives them                                                                              |
+| 20  | `POST /ai-coach/api/v1/launches/{launch_id}/checkpoint`        | Learner. Empty body                                                                                                                                                                            | 200                                                                                                       | Close handshake before API 14                                                                                         |
+
+**API 5 answer shape:** checkbox `{ additionalProp1: [choice strings] }` + `other_notes` (null unless Other). Rating `{ additionalProp1: 1–5 }`. Input `{ additionalProp1: "text" }`. Key name is `additionalProp1`.
+
+**API 4 questions:** Q1 checkbox max 3 strengths · Q2 rating 1–5 · Q3 checkbox max 3 actions · Q4 rating 1–5 · Q5 checkbox max 3 skills · Q6 text.
+
+**Home slugs seen:** `request-feedback-from-colleagues`, `set-your-first-goal`, `review-new-insights`.
+
+**Search terms:** `USERCOUNT` A–E → rotate `roleProfiles` plus `poolJobRoles` (Product Manager is one of many, not everyone). Default ready/full → that row’s JSON `jobRole`. POST goal / tasks accept **200 or 201**.
+
+**API 9:** Default users match planned name **exact**, then a catalog name that **contains** it, then another of the 20 names, then any unused catalog skill so all 3 JSON goals still post (title stays JSON). USERCOUNT: GET catalog for **that person’s job role** (cached per role). Use the planned 20-name (or a containing catalog name) if this catalog has it; else another 20-name in the catalog; else any catalog skill so the dashboard still has variety. Do not force every random learner onto Product Manager.
+
+**API 14 notes:** `launch_id` **is** the uuid in `/ai-coach/chat/{uuid}` (same as coaching-session referer). One launch can take **many** blocks — each POST a new body `id` (client UUID). Server `duration_seconds` ≈ `ended_at − started_at`. Close from HAR uses `close_reason: "session_reset"`. Also seen: `surface_inactive`, `idle_timeout`, `page_hidden`. Block `id` is not the launch id. Set `started_at` in the past by planned seconds — do not sleep. First `POST /chat/stream` with `launch_id: null` creates the launch.
+
+**API 15/16 notes:** Referer `/ai-coach/chat/{uuid}` — that uuid is the chat `launch_id`, not the coaching-session `id`. The learner UI shows the session on that chat. Do **not** POST 15 without a real chat uuid. Body uses local time **without** offset + separate `scheduling_timezone` (`Asia/Calcutta`). `recurrence: "weekly"`. `recurrence_weekday`: **0 = Monday**. `duration_minutes: 60`. **Full default users:** one weekly session **per closed chat from this run**. Ready, untouched, and USERCOUNT pool get **no** coaching sessions. Do not PATCH 16.
+
+**Still missing:** dedicated session-topics API, manager/colleague feedback (email). Do not invent those. Topics only appear if the product derives them from chat + session-notes.
+
+---
+
+## `@aiCoachSettings`
+
+Admin token → PATCH only:
+
+```json
+{
+  "enableAICoach": true,
+  "allowFeedbackRequests": true,
+  "allowOnlyManagersForFeedback": false,
+  "allowColleaguesAndManagersForFeedback": true,
+  "displayManagerFeedbackSeparately": true,
+  "minColleaguesRequiredForFeedback": 1,
+  "enableAICoachForAllLearners": true,
+  "aiCoachAudiences": [],
+  "allowPulseChecks": true,
+  "allowSelfPulseChecks": true,
+  "allowManagerPulseChecks": true,
+  "selfPulseCheckFrequencyDays": 60,
+  "performanceCycleDates": [
+    "<today+14d>",
+    "<today+1 month>",
+    "<today+2 months>"
+  ]
+}
+```
+
+Stop. No learners.
+
+---
+
+## `@aiCoachDashboard` — `USERCOUNT=N`
+
+```
+tenth = floor(N * 0.1)
+A     = N - 5 * tenth
+```
+
+All N: API 6. **F:** stop (Not started). **A–E:** profile (rotated job role) → assessment → API 8 → GET API 6 again → both flags true → goals/tasks, in batches of 20. Then **one chat** if goal+tasks succeeded, also in batches of 20 (SSE times out if ~90 streams run at once). Stamp group, role, skill, mixIndex, chat script, and duration **before** the profile/goals batches.
+
+| Group | Count           | Assess | Goals | Tasks per goal | Complete tasks | Achieve goal | Chat |
+| ----- | --------------- | ------ | ----- | -------------- | -------------- | ------------ | ---- |
+| A     | leftover (~50%) | PUT    | 1     | 1              | that 1         | yes          | 1    |
+| B     | tenth           | PUT    | 2     | 2              | both           | yes          | 1    |
+| C     | tenth           | PUT    | 2     | 2              | 1 of 2         | no           | 1    |
+| D     | tenth           | PUT    | 1     | 1              | no             | no           | 1    |
+| E     | tenth           | PUT    | 2     | 2              | no             | no           | 1    |
+| F     | tenth           | no     | none  | —              | —              | —            | none |
+
+Never “all tasks done, goal still open.” A and D stay at **1 goal**. B, C, E get **2** so Goals set is higher than Users who set goals. Extra goals use another catalog skill (not the same name twice on one person). One chat if at least one goal landed.
+
+|                                    | N=50         | N=100              |
+| ---------------------------------- | ------------ | ------------------ |
+| A / B–F each                       | 25 / 5       | 50 / 10            |
+| Completed / not started            | 45 / 5       | **90 / 10**        |
+| Users who set goals                | 45           | **90**             |
+| Goals set / achieved / in progress | 60 / 35 / 25 | **120 / 70 / 50**  |
+| Tasks created / done / pending     | 90 / 55 / 35 | **180 / 110 / 70** |
+
+Derived: M (assess PUTs) = A+B+C+D+E. Users with goals = M. Goals set = A + 2B + 2C + D + 2E. Green goals = A + 2B. Orange = 2C + D + 2E. Tasks created = A + 4B + 4C + D + 4E. Task PATCHes = A + 4B + 2C.
+
+---
+
+## Assessment mix (M people) — dashboard bars
+
+This mix is why the Assessments tab looks rich. **Every** Q1/Q3/Q5 choice (including Other) and **every** Q2/Q4 score 1–5 must get some people. Q2 and Q4 use **different** weight orders so the two rating charts do not match. 4 and 5 are much heavier so both averages stay above 4.5. Q1 vs Q3 vs Q5 shuffle the 9 weights so the three checkbox charts do not match.
+
+Copy `question_id` from GET. `round_to_sum` so buckets add to M (or M×3).
+
+Q2 is “How effective do you feel you are with building collaboration and trust with others?” Q4 is “How effective do you feel you are in your role?” Same mix as before (all 1–5), just more people on 4 and 5. Default ready/full score **5** on both. Assessment is re-PUT on re-runs so an org that already has low scores can recover.
+
+**Q2 / Q4 people per score** = `round_to_sum(M * weight / 70)`:
+
+| Score | Q2 weight | Q4 weight |
+| ----- | --------- | --------- |
+| 1     | 1         | 1         |
+| 2     | 1         | 2         |
+| 3     | 2         | 1         |
+| 4     | 16        | 18        |
+| 5     | 50        | 48        |
+
+**Q1 / Q3 / Q5:** M×3 votes. `round_to_sum(M×3 * weight / 210)` with weights **8, 12, 16, 20, 24, 28, 32, 34, 36**. Other = the 8 slot. If Other is selected, `other_notes` is the JSON sentence for that question (not a placeholder). If Other is not selected, `other_notes` is null. **Shuffle that weight order per question.**
+
+Q1: Creating innovative ideas or solutions; Meeting deadlines consistently; Managing or inspiring others; Communicating with clarity and intent; Demonstrates subject matter expertise; Solving complex problems proactively; Building cross-functional relationships; Successfully managing change or disruption; Other.
+
+Q3: Following through on commitments; Setting clear expectations for others; Listening actively to understand; Removing blockers for the team; Staying flexible when plans change; Remaining solution-focused; Resolving conflict during challenges; Aligning work toward shared goals; Other.
+
+Q5 (not the 20 goal names): Prioritizing the right work; Strategic thinking; Quality of work and attention to detail; Innovation and creative solutions; Proactive problem-solving; Making data-informed decisions; Functional or technical expertise; Coaching or mentoring others; Other.
+
+Q6: unique short note per person.
+
+---
+
+## Goals by skill — dashboard variety
+
+Assign **A–E first goals** onto this table (different sizes, green and orange). Extra B/C/E goals take another of the 20 names (not the same skill twice on one person), so at N=100 the skill table is **120** goals, not 90. USERCOUNT people **rotate job roles** so more of these names exist in someone’s API 9 catalog. If a person’s role cannot post the planned name, pick another 20-name (or any catalog skill) for that person only. Skip a name only if N is small and it rounds to 0. If a skill has 2+ goals, keep both colors when totals allow.
+
+`USERCOUNT` goal titles can be short (`Improve <skill>`). Default full users keep the role-based titles in the table below — login demos, not dashboard filler.
+
+Names in order: AI Literacy, Generative AI, Prompt Engineering, Data Literacy, Strategic Thinking, Critical Thinking, Problem Solving, Decision Making, Change Management, Communication, Leadership, Coaching, Mentoring, Emotional Intelligence, Collaboration, Stakeholder Management, Project Management, Agile Practices, Career Development, Business Acumen.
+
+**N=100 reference (90 / 60 / 30):**
+
+| Skill                  | Goals | Done | In progress |
+| ---------------------- | ----- | ---- | ----------- |
+| AI Literacy            | 10    | 8    | 2           |
+| Generative AI          | 8     | 7    | 1           |
+| Prompt Engineering     | 8     | 6    | 2           |
+| Data Literacy          | 6     | 5    | 1           |
+| Strategic Thinking     | 7     | 5    | 2           |
+| Critical Thinking      | 5     | 4    | 1           |
+| Problem Solving        | 6     | 4    | 2           |
+| Decision Making        | 4     | 3    | 1           |
+| Change Management      | 5     | 3    | 2           |
+| Communication          | 3     | 2    | 1           |
+| Leadership             | 4     | 2    | 2           |
+| Coaching               | 3     | 2    | 1           |
+| Mentoring              | 3     | 1    | 2           |
+| Emotional Intelligence | 2     | 1    | 1           |
+| Collaboration          | 3     | 1    | 2           |
+| Stakeholder Management | 2     | 1    | 1           |
+| Project Management     | 3     | 1    | 2           |
+| Agile Practices        | 2     | 1    | 1           |
+| Career Development     | 4     | 2    | 2           |
+| Business Acumen        | 2     | 1    | 1           |
+
+Scale: goals_i = `round_to_sum(G * ref_goals / 90)`. Green_i = `round_to_sum((A+B) * ref_green / 60)`, orange = goals − green. Fix totals. A+B people → green slots; C+D+E → orange on the **same** skill.
+
+---
+
+## `@aiCoachDefaultUsers`
+
+Look up each of the 16 in this org. Log misses. Continue with who is left. **None found → skip the test.** Do not substitute random learners. Each seeded person uses **their own** JSON `jobRole` (not eight copies of Product Manager).
+
+| Kind      | Count | Assess             | Goals | Tasks      | Complete tasks                               | Achieve goal | Chat                                   |
+| --------- | ----- | ------------------ | ----- | ---------- | -------------------------------------------- | ------------ | -------------------------------------- |
+| untouched | 4     | no (GET data only) | none  | —          | —                                            | —            | none                                   |
+| ready     | 5     | PUT                | none  | —          | —                                            | —            | none                                   |
+| full      | 7     | PUT                | 3     | 2 per goal | goal 1 both; goal 2 none; goal 3 task 1 only | goal 1 only  | 2 or 3, then 1 weekly session per chat |
+
+Chats + API 15 for full users run in this same test after at least one goal is created. Do not promote an untouched name into ready/full if someone else is missing.
+
+| Login              | jobRole                             | Kind      | Assess | Goals | Tasks      | Complete tasks | Achieve goal  | Chat            |
+| ------------------ | ----------------------------------- | --------- | ------ | ----- | ---------- | -------------- | ------------- | --------------- |
+| Libby_Bright       | Learning and Development Specialist | untouched | no     | none  | —          | —              | —             | none            |
+| Anna_Cole          | IT Support Specialist               | untouched | no     | none  | —          | —              | —             | none            |
+| Peter_Gill         | Health and Safety Coordinator       | untouched | no     | none  | —          | —              | —             | none            |
+| May_Donovan        | VP Technology                       | untouched | no     | none  | —          | —              | —             | none            |
+| Fergus_Tyler       | IT Director                         | ready     | PUT    | none  | —          | —              | —             | none            |
+| Carolyn_Stephenson | Learning and Development Specialist | ready     | PUT    | none  | —          | —              | —             | none            |
+| Jonathan_Tan       | Customer Success Manager            | ready     | PUT    | none  | —          | —              | —             | none            |
+| Raja_Reid          | Channel Sales Manager               | ready     | PUT    | none  | —          | —              | —             | none            |
+| Patrick_Stephenson | Sales Director                      | ready     | PUT    | none  | —          | —              | —             | none            |
+| Raheem_Ahmed       | Infrastructure Engineer             | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 3 + weekly each |
+| Isabella_Garcia    | Data Architect                      | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 2 + weekly each |
+| Ronald_Chen        | Software Engineer                   | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 3 + weekly each |
+| Alisa_Massey       | Software Engineer                   | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 2 + weekly each |
+| Linda_Cole         | Retail Sales Associate              | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 3 + weekly each |
+| James_Graves       | Sales Associate                     | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 2 + weekly each |
+| Roseanna_Mcgowan   | Production Operations Associate     | full      | PUT    | 3     | 2 per goal | 2 / 0 / 1      | yes / no / no | 3 + weekly each |
+
+**Full users only — role-based goals and tasks.** Ready/untouched get none. Three different skills per person from the 20 names. Goal 1: both API 12 then API 13. Goal 2: create only. Goal 3: API 12 on **task 1 only**.
+
+API 10 body values: `title` = goal title below. `goal_skill_ids` = `[{ percipio_uuid: <id from API 9>, name: <skill> }]`. Never hardcode the uuid.
+
+API 11 body values: array of two `{ title, description, due_date }`. `due_date` = **today+14** for task 1, **today+28** for task 2 (`YYYY-MM-DD`).
+
+| Login            | Role                            | Goal | Skill `name`           | Goal `title`                                 | Task 1 `title` / `description`                                                                                      | Task 2 `title` / `description`                                                                       |
+| ---------------- | ------------------------------- | ---- | ---------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Raheem_Ahmed     | Infrastructure Engineer         | 1    | Problem Solving        | Cut repeat infrastructure incidents          | Write a one-page review of the last five P1s / List the trigger, impact, and fix for each so the pattern is obvious | Add a runbook for the top failure / Put steps and rollback in the team wiki so anyone can recover it |
+| Raheem_Ahmed     |                                 | 2    | Change Management      | Make production changes safer                | Draft a weekly change window / Propose hours that avoid peak traffic and share it with app owners                   | Write a rollback checklist / One page: how we back out a bad change in under 15 minutes              |
+| Raheem_Ahmed     |                                 | 3    | Project Management     | Plan next-quarter capacity                   | Inventory current host and disk use / Spreadsheet of the top 20 services and headroom                               | Share a forecast with managers / Short note on what we must buy or move before the next peak         |
+| Isabella_Garcia  | Data Architect                  | 1    | Data Literacy          | Make core metrics trustworthy                | Publish a glossary for five company metrics / Name, owner, and grain so reports stop arguing                        | Flag two dashboards that disagree / Note which source is right and who will fix the other            |
+| Isabella_Garcia  |                                 | 2    | Strategic Thinking     | Draw the target data platform                | Sketch current vs target flows / One diagram: ingest, store, serve                                                  | List three bets for the next year / What we build, what we stop, and why                             |
+| Isabella_Garcia  |                                 | 3    | Decision Making        | Cut unused pipeline cost                     | Find jobs no one queried in 90 days / List them with owner and last run                                             | Propose pause or delete for two jobs / Mail the owners with a date we will turn them off             |
+| Ronald_Chen      | Software Engineer               | 1    | Agile Practices        | Ship a slice every sprint                    | Break the next story into a one-sprint slice / Demo-able work, not a half-built epic                                | Add a sprint demo note / What shipped, what slipped, what we try next                                |
+| Ronald_Chen      |                                 | 2    | Prompt Engineering     | Use AI on code without leaking secrets       | Write a safe-prompt checklist / What we never paste from prod or tickets                                            | Pair on one feature with a coding assistant / Keep the diff small and review it like any other PR    |
+| Ronald_Chen      |                                 | 3    | Problem Solving        | Reduce production defects from our squad     | Tag last month’s bugs by cause / Count how many were missed tests vs unclear requirements                           | Add one test for the top miss / Automate the case that bit us twice                                  |
+| Alisa_Massey     | Software Engineer               | 1    | Collaboration          | Make handoffs with design and QA cleaner     | Sit with QA on the last failed build / Write the three checks they wish they had sooner                             | Agree a definition of ready / Short list both squads will use before a story starts                  |
+| Alisa_Massey     |                                 | 2    | Generative AI          | Speed up boilerplate without skipping review | Try AI on one scaffolded service / Keep the generated files in a branch                                             | Review that output with a teammate / Mark what we keep, rewrite, or throw away                       |
+| Alisa_Massey     |                                 | 3    | Career Development     | Grow toward senior engineer                  | Ask my manager for two senior-level behaviors / Write them down after 1:1                                           | Shadow a design review / Notes on how the senior framed the tradeoff                                 |
+| Linda_Cole       | Retail Sales Associate          | 1    | Communication          | Help shoppers decide faster                  | Practice a 30-second product intro / Two items I sell most; say who they are for                                    | Ask one better question on the floor / Start with need, not a discount                               |
+| Linda_Cole       |                                 | 2    | Emotional Intelligence | Stay calm on returns and busy hours          | Note three tense moments this week / What I did and what I would try next                                           | Use one de-escalation line / Thank them, restate the issue, then offer a next step                   |
+| Linda_Cole       |                                 | 3    | Collaboration          | Back up the next shift cleanly               | Leave a closing note for the evening team / Stock gaps, pending pickups, anything odd                               | Offer to cover a peak hour / Tell the lead which hour I can take                                     |
+| James_Graves     | Sales Associate                 | 1    | Communication          | Run cleaner discovery calls                  | Write five discovery questions / Need, budget, timing, decision-maker, next step                                    | Record one call recap the same day / What they said they want and the agreed follow-up               |
+| James_Graves     |                                 | 2    | Stakeholder Management | Keep internal partners in the loop           | List who I pull in on a stuck deal / SE, manager, legal — and when                                                  | Send a weekly pipeline note / Three live deals and what I need from each person                      |
+| James_Graves     |                                 | 3    | Business Acumen        | Talk value, not only price                   | Build a one-page value story / Problem, cost of waiting, what we change                                             | Use it on two live opportunities / Note whether the talk stayed on price or on outcome               |
+| Roseanna_Mcgowan | Production Operations Associate | 1    | Problem Solving        | Clear the line’s top delay                   | Time the last three slowdowns / Where the line waited and for how long                                              | Fix or escalate the biggest wait / One change this week, or a named owner if it is not mine          |
+| Roseanna_Mcgowan |                                 | 2    | Change Management      | Bring a process change in without surprise   | Tell the next shift what is changing / Start, stop, and who to ask                                                  | Post a one-page new-step card / Photo or steps at the station                                        |
+| Roseanna_Mcgowan |                                 | 3    | Project Management     | Hit this week’s output plan                  | Break the week into daily targets / Units by day so we see slip early                                               | End-of-day check with the lead / Actual vs plan and one risk for tomorrow                            |
+
+If API 9 has no exact planned name on a **default** full user, use a catalog name that contains it (keep the JSON title). If still none, use another of the 20 names, then any unused catalog skill so all 3 JSON goals still post. Log which catalog name was used.
+
+**Chats live in the same greps as profile/goals.**
+
+- `@aiCoachDefaultUsers` full logins: **2 or 3 meaningful** chats from `defaultFullChats` (job/goal language) after at least one JSON goal. After each chat is closed (stream close_session → checkpoint → engagement-blocks), POST API 15 on **that** launch. Ready and untouched: no chats, no sessions.
+- `@aiCoachDashboard` A–E: **one chat** of 2–3 generic turns from `poolChatScripts` (not job-specific) **after** a successful goal+tasks. Mixed `chatDurationsSeconds` averaging **600s (10 min)**. **No** API 15. F: no chat.
+
+Gate: `hasCompletedProfileAndAssessment` is the same GET-data check used before POST goals and before any chat stream. Skip that person if either flag is not true. Goal or task create failed → skip chat (defaults: skip chats only if **zero** goals were created). Re-runs stack more goals and chats.
+
+---
+
+## Chat close path
+
+Same close path for every conversation: `POST /chat/stream` (`launch_id` null) → turns → GET session-notes → close_session stream → checkpoint → engagement-blocks. Recover `launch_id` from SSE or GET launches diff. Do not sleep for duration.
+
+**Assessment (ready + full).** Any valid answers for Q1–Q5 (scores 1–5; checkbox strings from the lists above). Q6 any short note. Then API 8. No per-login answer table — this is only so the learner can set goals / look completed. Dashboard bars come from the `USERCOUNT` mix.
+
+**Profile text — all 14 JSON roles (keep even if that login is untouched).** Ready/full: API 1 search that row’s `jobRole` and PUT these three fields. Untouched: GET API 6 only; do not PUT; rows stay here as reference. Shared title → same three answers.
+
+| Job role                            | Responsibilities                                                                                                                                                                                                                   | Aspirations                                                                                                                                                                            | Motivation                                                                                                                                                    |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| IT Director                         | I set technology direction and make sure our systems, security, and delivery teams stay aligned. I own budget, vendor choices, and the roadmap that keeps the business running. I also coach my managers so projects land on time. | I want to grow as a business-minded technology leader and get closer to company strategy. I would like to mentor more directors and tighten how we measure the value of tech work.     | I am energized when a messy platform problem becomes a clear plan and the teams execute it. Seeing the business trust technology as a partner keeps me going. |
+| Learning and Development Specialist | I design and run learning programs, work with managers on skill gaps, and keep content useful for the roles we support. I track completion and feedback so we know what to improve next.                                           | I want to move into a learning-strategy role where I can shape career paths and skills programs for the whole org. I also want to get sharper at using data to prove learning impact.  | I like watching someone apply a new skill on the job. Building programs people actually use is what energizes me.                                             |
+| Infrastructure Engineer             | I keep servers, networks, and cloud environments stable and secure. I handle incidents, capacity, and automation so teams can ship without waiting on infrastructure.                                                              | I want to deepen cloud and reliability skills and grow into a senior or principal infrastructure role. I am also interested in platform work that other teams can self-serve.          | I am motivated when an outage is resolved cleanly or a manual process becomes a reliable pipeline. Quiet, stable systems are the win.                         |
+| Data Architect                      | I design how data is stored, modeled, and shared across products and reports. I set standards so analysts and engineers can trust what they query. I also review pipelines for quality and scale.                                  | I want to lead data strategy and mentor other architects. I would like to get stronger at turning business questions into simple, durable models.                                      | I like bringing order to messy data and seeing a model get used in real decisions. Clarity for other teams is what drives me.                                 |
+| IT Support Specialist               | I help employees with access, devices, and day-to-day tech issues. I log tickets, find root causes, and write simple guides so the same problem does not keep coming back.                                                         | I want to grow into a senior support or systems role and get better at automation. I am also interested in moving toward infrastructure or endpoint management.                        | I am energized when I unblock someone quickly and they can get back to work. Closing a tricky ticket for good is satisfying.                                  |
+| Software Engineer                   | I design, build, and test product features with my squad. I review code, fix defects, and help keep our services reliable in production.                                                                                           | I want to grow into a senior engineer who can lead design and mentor others. I also want to get better at system design and shipping with less rework.                                 | I am motivated when a feature lands cleanly and customers can use it. Solving a hard bug with the team is what I enjoy most.                                  |
+| Retail Sales Associate              | I help shoppers find the right product, close sales, and keep the floor ready. I handle questions, returns, and simple follow-up so the store hits its daily goals.                                                                | I want to grow into a shift lead or store supervisor and get stronger at coaching others on the floor. I am also interested in learning more about merchandising.                      | I like a busy floor and a customer who leaves happy. Hitting the day’s target with the team energizes me.                                                     |
+| Sales Associate                     | I qualify leads, run conversations, and move opportunities through the pipeline. I keep notes accurate and follow up so nothing stalls after a good call.                                                                          | I want to become a high-performing seller and then a team lead. I would like to get better at discovery and closing larger deals.                                                      | I am motivated by a well-run conversation that turns into a real opportunity. Winning a deal we earned as a team keeps me going.                              |
+| Production Operations Associate     | I keep daily production moving: schedules, handoffs, and quality checks. I flag delays early and work with the line so we meet output without cutting corners.                                                                     | I want to grow into a production lead or supervisor and get stronger at planning and continuous improvement. I am also interested in safety and process design.                        | I like a shift that finishes on plan. Fixing a bottleneck so the line runs smoothly is what energizes me.                                                     |
+| Health and Safety Coordinator       | I run safety programs, walk the floor, and follow up on incidents and near misses. I train people on procedures and help managers close gaps before they become injuries.                                                          | I want to grow into a broader EHS or operations-risk role. I would like to get better at using incident data to prevent the next event, not only report the last one.                  | I am motivated when a site is safer because we changed a habit, not only a policy. People going home well is the point.                                       |
+| Customer Success Manager            | I own post-sale relationships, adoption, and renewals for my accounts. I run check-ins, surface risks early, and pull in the right internal people when a customer is stuck.                                                       | I want to grow into a senior CSM or team lead and get stronger at expansion conversations. I also want to use customer data more, not only relationship notes.                         | I like turning a worried customer into a confident one. A renewal we earned through real value is what drives me.                                             |
+| Channel Sales Manager               | I grow revenue through partners: enablement, pipeline, and deal support. I keep partner expectations clear and remove blockers so they can sell with us.                                                                           | I want to lead a larger partner motion and get better at picking which channels to invest in. I am also interested in partner-led growth strategy.                                     | I am energized when a partner closes a deal we coached well. Seeing two companies win together keeps me going.                                                |
+| Sales Director                      | I set the sales plan, coach managers, and own the number for my region or segment. I review pipeline quality, hire and develop sellers, and keep forecast honest.                                                                  | I want to grow into a broader commercial leadership role and get sharper at building repeatable teams, not only individual heroes. I also want to tighten how we use data in forecast. | I am motivated when the team hits a hard number the right way. Developing a seller who starts to win on their own is the best part.                           |
+| VP Technology                       | I own technology strategy, investment choices, and how engineering and IT support the business. I align leaders on priorities, risk, and delivery. I also grow the next layer of tech leadership.                                  | I want to keep getting better at connecting technology bets to company outcomes. I would like to build a stronger leadership bench and a simpler operating model.                      | I am energized when a hard tradeoff becomes a clear decision and the organization moves. Seeing teams ship with less friction is what I care about.           |
+
+---
+
+## Admin tiles
+
+| Tile                                             | This phase                                                                                   |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| Goals set / completed / tasks / users with goals | From N (plus default full users if that grep already ran)                                    |
+| Goals by skill                                   | Mixed sizes from the 20-name table; USERCOUNT rotates roles so catalogs can post those names |
+| Chat sessions / time / topics                    | Pool 2–3 turn chats + full-user meaningful chats. Topics only if the product derives them.   |
+| Self Assessment donut                            | F + untouched defaults = Not started; A–E = Completed (~90/10 from the pool)                 |
+| Self question bars                               | Every option / every score 1–5; Q2 ≠ Q4; Q1 ≠ Q3 ≠ Q5                                        |
+| Manager / colleague pies                         | Not this spec. Email-only invites.                                                           |
+
+Three tagged tests are wired in this spec. `USERCOUNT` default 100 on the dashboard command. Default-user chats and pool chats are in `fullAiCoachCommand`.

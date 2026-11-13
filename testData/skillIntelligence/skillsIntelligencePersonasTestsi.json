@@ -1,0 +1,1114 @@
+[
+  {
+    "loginName": "Savion_Rau_1",
+    "realLoginName": "Jonathan_Tan",
+    "currentRoleName": "Marketing Associate",
+    "aspirationalRoleName": "Product Marketing Manager",
+    "currentFocusSkills": [
+      {
+        "skillName": "Digital Marketing",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Collaboration and Teamwork",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Verbal Communication",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Brand and Marketing Strategy",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Consumer Insights",
+        "selfRating": 2
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Product Marketing",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Influence and Persuasion",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Market and Customer Insight Analysis",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Marketing Strategy and Planning",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Competitive Intelligence and Scenario Planning",
+        "selfRating": 0
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Written Communication",
+        "benchmarkId": "c77b44e8-8d5a-4e0f-92ab-80d2d551cdff",
+        "mappedSkill": "Written Communication"
+      },
+      {
+        "title": "Managing Conflict",
+        "benchmarkId": "feac39ca-c7ea-4671-882f-c4b3926bbafb",
+        "mappedSkill": "Conflict Management and Resolution"
+      },
+      {
+        "title": "Time Management & Managing Priorities",
+        "benchmarkId": "f3d0fb58-da7b-4003-b08f-0ced665c74c8",
+        "mappedSkill": "Time Management"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Marketing Essentials",
+        "benchmarkId": "d59e03f7-0a91-4af6-a000-aab7af83d2a9",
+        "mappedSkill": "Marketing Strategy and Planning"
+      },
+      {
+        "title": "Strategic Thinking",
+        "benchmarkId": "094a7363-2e48-42c7-9563-5856e78b2c69",
+        "mappedSkill": "Strategic Thinking and Planning"
+      },
+      {
+        "title": "Business Acumen",
+        "benchmarkId": "a1d5f0e7-8e4f-44c5-b628-a717761858b3",
+        "mappedSkill": "Business Environment and Industry Knowledge"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "The Four Ps: Essential Factors in Marketing",
+        "courseId": "b0685e4f-3503-4c75-9fa5-b1e6a657d35e",
+        "mappedSkill": "Marketing"
+      },
+      {
+        "title": "Predictive Analytics: Case Studies for Marketing & Retail",
+        "courseId": "06da7a04-0b27-4b63-afc9-7bf189cb2ebe",
+        "mappedSkill": "Consumer Research and Insights"
+      },
+      {
+        "title": "Content Design",
+        "courseId": "42a73cbb-ff7d-11e6-8638-0242c0a80b06",
+        "mappedSkill": "Content Creation and Management"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Building Trust: Ethics and the Marketing Mix",
+        "courseId": "c1ef499f-7c46-4f10-95cc-baf6ba40ec3a",
+        "mappedSkill": "Influence and Persuasion"
+      },
+      {
+        "title": "Core Concepts in Technical Product Management",
+        "courseId": "d8f1f0e2-848b-4e46-b26e-2fd84891a78d",
+        "mappedSkill": "Cross-Functional Collaboration and Communication (PM)"
+      },
+      {
+        "title": "Marketing Fundamentals: Who Is Your Customer?",
+        "courseId": "7feb7a8a-866b-4bbe-af21-e1e81caf5eee",
+        "mappedSkill": "Marketing Strategy and Planning"
+      }
+    ]
+  },
+  {
+    "loginName": "Okey_Kohler_2",
+    "realLoginName": "Raja_Reid",
+    "currentRoleName": "Project Manager",
+    "aspirationalRoleName": "Program Manager",
+    "currentFocusSkills": [
+      {
+        "skillName": "Collaboration and Teamwork",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Project Planning and Scheduling",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Budgeting and Cost Control",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Change Management (PPM)",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Project Portfolio Management",
+        "selfRating": 1
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Conflict Management and Resolution",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Innovation Leadership",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Accountability and Performance Management",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Organizational Change Management",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Project Execution and Monitoring",
+        "selfRating": 0
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Presentation Skills",
+        "benchmarkId": "3b379f9f-cf65-4a1b-9c1c-9cdddbacd30d",
+        "mappedSkill": "Verbal Communication"
+      },
+      {
+        "title": "Risk Management",
+        "benchmarkId": "9148bda7-67f3-4ce6-992f-6c9edde504db",
+        "mappedSkill": "Risk Management"
+      },
+      {
+        "title": "Influence and Persuasion",
+        "benchmarkId": "b3aefa9f-75dc-47e8-a05a-8a33f8b96a17",
+        "mappedSkill": "Influence and Persuasion"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Project Cost Management Competency (Intermediate Level)",
+        "benchmarkId": "4015a074-53a9-4bba-9503-239f6fed5721",
+        "mappedSkill": "Budgeting"
+      },
+      {
+        "title": "Managing Conflict",
+        "benchmarkId": "feac39ca-c7ea-4671-882f-c4b3926bbafb",
+        "mappedSkill": "Conflict Management and Resolution"
+      },
+      {
+        "title": "Innovation-Driven Leadership in Business",
+        "benchmarkId": "6b5ff3ea-849e-4159-bbd8-998053f50683",
+        "mappedSkill": "Innovation Leadership"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Fostering Cross-functional Collaboration",
+        "courseId": "522a1b9f-67aa-4253-ae9b-0e8104f09f44",
+        "mappedSkill": "Collaboration and Teamwork"
+      },
+      {
+        "title": "Leadercamp on-demand: Risky Business — Managing Risks on Projects",
+        "courseId": "a8ab1716-0e26-4d71-adae-0f2032e9b951",
+        "mappedSkill": "Risk Management"
+      },
+      {
+        "title": "PMBOK® 8 Advanced Practice: Governance and Stakeholder Domains",
+        "courseId": "449efb8b-d8d1-4f5c-bc45-569e5edf048f",
+        "mappedSkill": "Project and Process Governance"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Navigating through Changes and Conflicts in Projects",
+        "courseId": "562f7b01-fea5-11e6-8638-0242c0a80b06",
+        "mappedSkill": "Conflict Management and Resolution"
+      },
+      {
+        "title": "Leading an Innovation Culture to Future-proof Your Organization",
+        "courseId": "206391da-565a-45a7-bcdb-3d595022dcf7",
+        "mappedSkill": "Innovation Leadership"
+      },
+      {
+        "title": "SHRM BASK 2025: Consultation and Change Management",
+        "courseId": "1dc4ee72-de74-4284-881c-94ecbd879606",
+        "mappedSkill": "Change Management and Transformation"
+      }
+    ]
+  },
+  {
+    "loginName": "Susan_Yost_3",
+    "realLoginName": "Isabella_Garcia",
+    "currentRoleName": "Data Analyst",
+    "aspirationalRoleName": "Director of Data Analytics",
+    "currentFocusSkills": [
+      {
+        "skillName": "Critical Reasoning",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Data Collection",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Data Quality Assurance",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Statistical Analysis",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Insight Generation",
+        "selfRating": 0
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Communication and Presentation for Leaders",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Decision-Making and Judgment",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Creative and Innovative Problem Solving",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Data-Driven Business Analysis",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Project Portfolio Management",
+        "selfRating": 0
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Data Visualization with Tableau Proficiency (Advanced Level)",
+        "benchmarkId": "21f568c1-73e3-4158-8389-128cf9cb635d",
+        "mappedSkill": "Data Visualization and Communication"
+      },
+      {
+        "title": "Oral Communication",
+        "benchmarkId": "050de5b4-1c73-48a5-8248-adea2690acc3",
+        "mappedSkill": "Verbal Communication"
+      },
+      {
+        "title": "Written Communication",
+        "benchmarkId": "c77b44e8-8d5a-4e0f-92ab-80d2d551cdff",
+        "mappedSkill": "Written Communication"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Data Management and Governance Competency (Intermediate Level)",
+        "benchmarkId": "3fb24b3d-07e6-4d25-975e-385c2da6419f",
+        "mappedSkill": "Data Governance and Quality Management"
+      },
+      {
+        "title": "Statistics for Data Analysis Proficiency (Advanced Level)",
+        "benchmarkId": "d94c18e7-d770-4c15-8940-034bc98d6edc",
+        "mappedSkill": "Statistical Analysis"
+      },
+      {
+        "title": "Team Leadership Skills and Techniques",
+        "benchmarkId": "2f955bd6-779b-4ac7-808c-15f0741d99cb",
+        "mappedSkill": "Team Leadership and Motivation"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Classifying and Collecting Data",
+        "courseId": "4b31cf3b-c958-11e7-8c81-9212ca48e307",
+        "mappedSkill": "Data Collection and Information Gathering"
+      },
+      {
+        "title": "CompTIA Data+: Inferential Statistical Methods",
+        "courseId": "a6df7b28-a42f-496e-be66-04a7792d7d28",
+        "mappedSkill": "Statistical Analysis"
+      },
+      {
+        "title": "Developing Your Critical Thinking and Cognitive Flexibility",
+        "courseId": "4b2461b6-c958-11e7-8c81-9212ca48e307",
+        "mappedSkill": "Critical Thinking and Logical Reasoning"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Leadercamp on-demand: Decision Making",
+        "courseId": "6735c5ea-7ef8-4f41-9944-2c9271ec41f0",
+        "mappedSkill": "Decision-Making and Judgment"
+      },
+      {
+        "title": "Unlocking Your Own Creative Genius",
+        "courseId": "2b485ccb-bcfd-4caf-bf8d-0689bd8e22c0",
+        "mappedSkill": "Creative and Innovative Problem Solving"
+      },
+      {
+        "title": "Design Thinking: Starting Your Journey",
+        "courseId": "70753a29-7a38-41b5-8be8-dd1ebe653497",
+        "mappedSkill": "Creative and Innovative Problem Solving"
+      }
+    ]
+  },
+  {
+    "loginName": "Kyleigh_Ullrich_4",
+    "realLoginName": "Carolyn_Stephenson",
+    "currentRoleName": "Associate Talent Management",
+    "aspirationalRoleName": "Senior Talent Management Analyst",
+    "currentFocusSkills": [
+      {
+        "skillName": "Feedback and Coaching Communication",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Human Resources Information Systems (HRIS) Management",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Employee Onboarding",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Organizational Design, Development, and Talent Management",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Talent Acquisition",
+        "selfRating": 2
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Data Collection",
+        "selfRating": 0
+      },
+      {
+        "skillName": "HR Analytics and Workforce Planning",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Organizational Alignment and Integration",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Performance Management",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Succession Planning and Talent Management",
+        "selfRating": 0
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Recruiting, Hiring, and Onboarding",
+        "benchmarkId": "915e0569-5272-40a2-af7c-4d51a0b565ed",
+        "mappedSkill": "Talent Acquisition"
+      },
+      {
+        "title": "Effective Teamwork",
+        "benchmarkId": "ae2e0231-6648-4b54-8576-1638d44ce24f",
+        "mappedSkill": ""
+      },
+      {
+        "title": "Written Communication",
+        "benchmarkId": "c77b44e8-8d5a-4e0f-92ab-80d2d551cdff",
+        "mappedSkill": ""
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Influence & Persuasion",
+        "benchmarkId": "b3aefa9f-75dc-47e8-a05a-8a33f8b96a17",
+        "mappedSkill": ""
+      },
+      {
+        "title": "Team Leadership Skills and Techniques",
+        "benchmarkId": "2f955bd6-779b-4ac7-808c-15f0741d99cb",
+        "mappedSkill": "Collaboration and Teamwork"
+      },
+      {
+        "title": "Statistics for Data Analysis Competency (Intermediate Level)",
+        "benchmarkId": "e3b133bd-d5b0-4eb8-a5e2-335bb499232d",
+        "mappedSkill": "Statistical Analysis"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Professional in Human Resources: Engagement Trends",
+        "courseId": "89670ed0-4e8d-46b4-9b09-84ebcad96586",
+        "mappedSkill": ""
+      },
+      {
+        "title": "How the Lego Group Built Culture Change: From the Ground Up, powered by MIT SMR",
+        "courseId": "d80824a4-e777-470b-8c9f-f8f816349654",
+        "mappedSkill": ""
+      },
+      {
+        "title": "Becoming a Successful Collaborator",
+        "courseId": "28eddbfa-a97e-4dc0-897d-88dc603c4513",
+        "mappedSkill": ""
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Analyzing Data and Root Causes in Six Sigma",
+        "courseId": "52b014d4-49b4-4258-bab1-6944865706a7",
+        "mappedSkill": ""
+      },
+      {
+        "title": "Smart Narratives, Q&A Visuals, & Copilot in Power BI",
+        "courseId": "0535d4e2-510e-4101-92a4-f734b92dd40c",
+        "mappedSkill": ""
+      },
+      {
+        "title": "PL-300: An Overview of Data Modeling in Power BI",
+        "courseId": "4210da8e-ffad-4207-9fa8-3e47f9980fe8",
+        "mappedSkill": ""
+      }
+    ]
+  },
+  {
+    "loginName": "Antoinette_Volkman_1",
+    "realLoginName": "James_Graves",
+    "currentRoleName": "Associate Account Executive",
+    "aspirationalRoleName": "Senior Account Executive Strategic",
+    "currentFocusSkills": [
+      {
+        "skillName": "Influence and Persuasion",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Verbal Communication",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Collaboration and Teamwork",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Active Listening",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Time Management",
+        "selfRating": 0
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Influence and Persuasion",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Corporate Governance and Ethical Business Practices",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Business Model and Value Proposition Design",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Storytelling for Business",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Presentation and Facilitation Skills",
+        "selfRating": 2
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Building Collaborative Relationships",
+        "benchmarkId": "0a23cf8a-1f08-4ec5-8a4b-478509746f23",
+        "mappedSkill": "Collaboration and Teamwork"
+      },
+      {
+        "title": "Ethics, Integrity, & Trust",
+        "benchmarkId": "ada51013-882d-4d48-aefe-5994d9d94e2c",
+        "mappedSkill": "Professionalism"
+      },
+      {
+        "title": "Presentation Skills",
+        "benchmarkId": "3b379f9f-cf65-4a1b-9c1c-9cdddbacd30d",
+        "mappedSkill": "Verbal Communication"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Listening",
+        "benchmarkId": "c39c08e2-8445-4c3c-8797-8ad4332bffc7",
+        "mappedSkill": "Active Listening"
+      },
+      {
+        "title": "Managing Conflict",
+        "benchmarkId": "feac39ca-c7ea-4671-882f-c4b3926bbafb",
+        "mappedSkill": "Conflict Management and Resolution"
+      },
+      {
+        "title": "Building Collaborative Relationships",
+        "benchmarkId": "0a23cf8a-1f08-4ec5-8a4b-478509746f23",
+        "mappedSkill": "Collaboration and Teamwork"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Collaboration and Work Management in Microsoft 365",
+        "courseId": "aaee5b4f-ee15-46d2-b1cf-5d41a6e23878",
+        "mappedSkill": "Cross Functional Collaboration for Customer Experience"
+      },
+      {
+        "title": "Optimizing Time Management for Successful Sales Preparation",
+        "courseId": "6519a1a4-ea42-4f7a-aad7-63a81b35048e",
+        "mappedSkill": "Sales Operations and Process Management"
+      },
+      {
+        "title": "Getting Your Pitch Heard",
+        "courseId": "f48a3aa0-6fba-11e8-90ac-1dee3484b540",
+        "mappedSkill": "Verbal Communication"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Creating & presenting a slideshow in Google Slides 2020",
+        "courseId": "07cfdf13-32cc-432f-a2d4-fbb8b3bacff0",
+        "mappedSkill": "Presentation and Facilitation Skills"
+      },
+      {
+        "title": "Expert Reflections: Positive Relationships at Work",
+        "courseId": "805b2b98-4d9f-4fb8-b95c-1721a8d012e8",
+        "mappedSkill": "Interpersonal Relationship Building"
+      },
+      {
+        "title": "AI Is Helping Companies Improve and Redefine Performance, powered by MIT SMR",
+        "courseId": "0ca6030c-b5b9-454e-a2fa-cc780ca217fa",
+        "mappedSkill": "Performance Measurement and Management"
+      }
+    ]
+  },
+  {
+    "loginName": "Einar_Hudson_1",
+    "realLoginName": "Linda_Cole",
+    "currentRoleName": "Associate Product Manager",
+    "aspirationalRoleName": "Senior Product Manager",
+    "currentFocusSkills": [
+      {
+        "skillName": "Strategy Development",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Innovation-Led Growth Strategy",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Decision-Making and Judgment",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Product Change Management",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Collaboration and Teamwork",
+        "selfRating": 2
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Risk Management",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Behavioral Change and Habit Formation",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Interpersonal Relationship Building",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Influence and Persuasion",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Performance Measurement and Management",
+        "selfRating": 3
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Influence and Persuasion",
+        "benchmarkId": "b3aefa9f-75dc-47e8-a05a-8a33f8b96a17"
+      },
+      {
+        "title": "Risk Management",
+        "benchmarkId": "9148bda7-67f3-4ce6-992f-6c9edde504db"
+      },
+      {
+        "title": "Software Product Management Proficiency (Advanced Level)",
+        "benchmarkId": "1d545d21-8bba-4bcb-8a0d-5b09994added"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Strategic Thinking",
+        "benchmarkId": "094a7363-2e48-42c7-9563-5856e78b2c69"
+      },
+      {
+        "title": "Scrum Proficiency (Advanced Level)",
+        "benchmarkId": "92afe65e-2b74-4018-96a3-bc833e7b3522"
+      },
+      {
+        "title": "Finance and Budgeting Skills",
+        "benchmarkId": "a3ecf936-665b-4603-8758-08302a99306d"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Fostering Cross-functional Collaboration",
+        "courseId": "522a1b9f-67aa-4253-ae9b-0e8104f09f44"
+      },
+      {
+        "title": "Product Management: Create a Go-To-Market Plan",
+        "courseId": "508f5347-6edd-47d7-a413-e78fa396503f"
+      },
+      {
+        "title": "Project Management Needs vs Expectations",
+        "courseId": "ffd9d5e1-cba4-4d30-b4c4-49a0c85cf08f"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Financial Analysis for Decision Making",
+        "courseId": "8203188f-f290-4f2e-a8da-eb040b22a25b"
+      },
+      {
+        "title": "Market Research and Competitive Analysis for Technical Products",
+        "courseId": "3c77c983-261c-4946-9ace-933c657ced18"
+      },
+      {
+        "title": "Developing Your Business Acumen",
+        "courseId": "3f4a55c0-802d-11e8-8305-21229c9dd428"
+      }
+    ]
+  },
+  {
+    "loginName": "Linnie_Bruen_1",
+    "realLoginName": "Ronald_Chen",
+    "currentRoleName": "Information / Cyber Security Analyst",
+    "aspirationalRoleName": "Principal Information / Cyber Security",
+    "currentFocusSkills": [
+      {
+        "skillName": "Cyber Threat Intelligence",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Security Governance",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Security Operations",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Cybersecurity Compliance",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Problem Analysis",
+        "selfRating": 0
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Organizational Change Management",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Cybersecurity Risk Assessment",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Cybersecurity Frameworks and Standards",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Systems Thinking and Complexity Management",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Risk Management Framework (RMF)",
+        "selfRating": 0
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Critical Thinking Unit Benchmark",
+        "benchmarkId": "b65337e5-290d-4da6-bb83-221e883350eb"
+      },
+      {
+        "title": "AZ-500: Azure Identity and Access Management Competency (Intermediate Level)",
+        "benchmarkId": "d2ff14bb-24c3-47f0-a2ae-1f4f91f5d704"
+      },
+      {
+        "title": "GCP Architect: Ensuring Solution and Operations Reliability Competency (Intermediate Level)",
+        "benchmarkId": "2536a3d1-c5ba-492d-8083-dee1a6feeac8"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Certified Cloud Security Professional (CCSP): Legal, Risk, and Compliance Competency (Intermediate Level)",
+        "benchmarkId": "a77a38ff-d7c5-4571-97f0-5f4e1e9ee95a"
+      },
+      {
+        "title": "Statistics for Data Analysis Proficiency (Advanced Level)",
+        "benchmarkId": "d94c18e7-d770-4c15-8940-034bc98d6edc"
+      },
+      {
+        "title": "Problem Solving & Decision Making",
+        "benchmarkId": "a63b73da-042b-4a8b-a02b-cdc6c210c154"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Uncovering Truth with Data: Applying Statistics and Hypothesis Testing",
+        "courseId": "eb0e6fe0-1c6d-47c6-bb6b-bbb541a98876"
+      },
+      {
+        "title": "Analytics for Decision Making",
+        "courseId": "d6b52568-b44c-480d-97a6-7df4437d2768"
+      },
+      {
+        "title": "Uncovering Truth with Data: Applying Statistics and Hypothesis Testing",
+        "courseId": "eb0e6fe0-1c6d-47c6-bb6b-bbb541a98876"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Analytics for Decision Making",
+        "courseId": "d6b52568-b44c-480d-97a6-7df4437d2768"
+      },
+      {
+        "title": "Statistics Fundamentals Proctored Exam",
+        "courseId": "1b2cde33-c69f-4d02-b7ac-0d3f412d3192"
+      },
+      {
+        "title": "UX Data Analysis",
+        "courseId": "385494d4-7579-4809-8daf-8e85c2de89f3"
+      }
+    ]
+  },
+  {
+    "loginName": "Emerald_Wehner_1",
+    "realLoginName": "Raheem_Ahmed",
+    "currentRoleName": "DevOps Engineer",
+    "aspirationalRoleName": "Principal DevOps Engineer",
+    "currentFocusSkills": [
+      {
+        "skillName": "DevOps Automation",
+        "selfRating": 3
+      },
+      {
+        "skillName": "DevOps Performance Analytics",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Continuous Integration and Continuous Deployment (CI/CD)",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Observability",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Infrastructure as Code (IaC)",
+        "selfRating": 2
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Cloud Monitoring and Performance Management",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Continuous Integration and Continuous Deployment (CI/CD)",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Cloud Architecture Design",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Compliance and Governance in DevOps",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Containerization and Orchestration",
+        "selfRating": 2
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Angular 11 Awareness (Entry Level)",
+        "benchmarkId": "8100baf3-db5e-49b6-a033-518a2014d27e"
+      },
+      {
+        "title": "AWS Certified DevOps Engineer 2021: AWS Configuration Management and Infrastructure as Code Competency (Intermediate Level)",
+        "benchmarkId": "066014fd-99a7-476c-b964-dbc31d3b4e1d"
+      },
+      {
+        "title": "AWS Certified DevOps Engineer 2021: AWS Monitoring and Logging Competency (Intermediate Level)",
+        "benchmarkId": "464d4d45-e274-4002-b45e-7496590a4270"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Listening",
+        "benchmarkId": "c39c08e2-8445-4c3c-8797-8ad4332bffc7"
+      },
+      {
+        "title": "DevSecOps Literacy (Beginner Level)",
+        "benchmarkId": "7eaafd50-fb80-4668-8045-39b02bac4e9c"
+      },
+      {
+        "title": "DevSecOps Competency (Intermediate Level)",
+        "benchmarkId": "3335146d-d0c3-4138-996e-74a322c47d2a"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Git for Distributed Software Development",
+        "courseId": "a4d1f015-414f-4807-8fab-8259c0f2b518"
+      },
+      {
+        "title": "Object-Centric Process Mining",
+        "courseId": "818299f3-7888-4fea-b9af-231b9864f095"
+      },
+      {
+        "title": "Fundamentals of Git: Using Git for Source Control",
+        "courseId": "1ae4d53d-2543-46e6-b59b-ebd2f8c7abdd"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Application and package management using Helm",
+        "courseId": "550c19ab-b398-4f36-9033-a3e9be91de38"
+      },
+      {
+        "title": "Settle competing commits by using merge conflict resolution on GitHub",
+        "courseId": "e9980c11-ab74-4483-a2d9-107b0fad7f60"
+      },
+      {
+        "title": "Teaching Teamwork & Communication Skills",
+        "courseId": "ce046f59-3b65-4386-8a46-519f8a7a4162"
+      }
+    ]
+  },
+  {
+    "loginName": "Thad_Oberbrunner_1",
+    "realLoginName": "Alisa_Massey",
+    "currentRoleName": "Associate User Experience Design and Researcher",
+    "aspirationalRoleName": "Senior User Experience Design and Researcher",
+    "currentFocusSkills": [
+      {
+        "skillName": "Active Listening",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Product Design and User Experience",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Qualitative Data Analysis",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Creative Direction",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Hypothesis Development and Testing",
+        "selfRating": 1
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Critical Reasoning",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Stakeholder Analysis and Engagement",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Qualitative Data Analysis",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Creative and Innovative Problem Solving",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Systems Thinking and Complexity Management",
+        "selfRating": 1
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Listening",
+        "benchmarkId": "c39c08e2-8445-4c3c-8797-8ad4332bffc7"
+      },
+      {
+        "title": "Managing Conflict",
+        "benchmarkId": "feac39ca-c7ea-4671-882f-c4b3926bbafb"
+      },
+      {
+        "title": "Written Communication",
+        "benchmarkId": "c77b44e8-8d5a-4e0f-92ab-80d2d551cdff"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Stress Management & Wellness",
+        "benchmarkId": "0e0e4c70-3a22-4d9c-9f05-04091eb3bf18"
+      },
+      {
+        "title": "Oral Communication",
+        "benchmarkId": "050de5b4-1c73-48a5-8248-adea2690acc3"
+      },
+      {
+        "title": "Presentation Skills",
+        "benchmarkId": "3b379f9f-cf65-4a1b-9c1c-9cdddbacd30d"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Understand scalability in Power BI",
+        "courseId": "91263663-6048-44cb-8e44-0163cea8bc2a"
+      },
+      {
+        "title": "Create and manage scalable Power BI dataflows",
+        "courseId": "595157d3-9cd0-4caf-b3c7-eff123831a27"
+      },
+      {
+        "title": "Linear Models in scikit-learn vs. statsmodels",
+        "courseId": "f3feb38a-1c9b-41fb-a8f1-8e54f2c08667"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Systems Thinking: Managing Chaos and Complexity: A Platform for Designing Business Architecture, Third Edition",
+        "courseId": "ce23df10-f194-11e6-b33f-0242c0a80c08"
+      },
+      {
+        "title": "Business Experimentation: A Practical Guide for Driving Innovation and Performance in Your Business",
+        "courseId": "d50ca68c-5622-427c-be09-efce7397a6c9"
+      },
+      {
+        "title": "Systems Thinking: Managing Chaos and Complexity: A Platform for Designing Business Architecture, Third Edition",
+        "courseId": "ce23df10-f194-11e6-b33f-0242c0a80c08"
+      }
+    ]
+  },
+  {
+    "loginName": "Devan_Bashirian_1",
+    "realLoginName": "Roseanna_Mcgowan",
+    "currentRoleName": "Associate Customer Success Manager",
+    "aspirationalRoleName": "Senior Customer Success Manager",
+    "currentFocusSkills": [
+      {
+        "skillName": "Active Listening",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Customer Onboarding and Training",
+        "selfRating": 2
+      },
+      {
+        "skillName": "Emotional Intelligence and Empathy in Customer Interactions",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Time Management",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Interpersonal Relationship Building",
+        "selfRating": 1
+      }
+    ],
+    "aspirationalFocusSkills": [
+      {
+        "skillName": "Presentation and Facilitation Skills",
+        "selfRating": 4
+      },
+      {
+        "skillName": "Team Leadership and Motivation",
+        "selfRating": 1
+      },
+      {
+        "skillName": "Organizational Change Management",
+        "selfRating": 0
+      },
+      {
+        "skillName": "Customer Success Management",
+        "selfRating": 3
+      },
+      {
+        "skillName": "Cross-Functional Collaboration for Customer Experience",
+        "selfRating": 0
+      }
+    ],
+    "currentBenchmarks": [
+      {
+        "title": "Managing Conflict",
+        "benchmarkId": "feac39ca-c7ea-4671-882f-c4b3926bbafb"
+      },
+      {
+        "title": "Time Management & Managing Priorities",
+        "benchmarkId": "f3d0fb58-da7b-4003-b08f-0ced665c74c8"
+      }
+    ],
+    "aspirationalBenchmarks": [
+      {
+        "title": "Team Leadership Skills and Techniques",
+        "benchmarkId": "2f955bd6-779b-4ac7-808c-15f0741d99cb"
+      },
+      {
+        "title": "Collaboration and Teamwork",
+        "benchmarkId": "0a23cf8a-1f08-4ec5-8a4b-478509746f23"
+      }
+    ],
+    "currentCourses": [
+      {
+        "title": "Modern Product Leadership",
+        "courseId": "3d41a082-f7e2-4e20-9057-fc9c8ce6cd32"
+      },
+      {
+        "title": "Improve customer relationships using effective account management with Dynamics 365 Customer Voice",
+        "courseId": "0591db9c-b3f8-4ab5-be70-c0b0fa606820"
+      },
+      {
+        "title": "Conflict Management: Mediation",
+        "courseId": "118e1fe2-4bb4-4ee4-88f0-503c9139dd4e"
+      }
+    ],
+    "aspirationalCourses": [
+      {
+        "title": "Competing in a Customer-Centric World by Don Peppers",
+        "courseId": "70c09b24-defc-4b5b-9c38-97251b51b247"
+      },
+      {
+        "title": "Building an Experience Management Program",
+        "courseId": "39763027-39a8-4b58-8765-2a47c132042e"
+      },
+      {
+        "title": "Design Thinking: Empathizing to Understand the Problem",
+        "courseId": "f2bac1b5-5c17-46eb-9f57-a967342ad24c"
+      }
+    ]
+  }
+]

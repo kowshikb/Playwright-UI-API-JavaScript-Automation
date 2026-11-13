@@ -1,0 +1,112 @@
+---
+description: >-
+  Skills Intelligence plan. Default-user roles first. Read this instead of chats.
+  Career Center settings are wired. The rest is not. Do not run org-mutating scripts unless the user asks.
+alwaysApply: false
+globs: "{**/skillIntelligence*,**/skillsIntelligence*,**/skills-intelligence*,testData/skillIntelligence/**,tests/API/**/*skillIntelligence*}"
+---
+
+# Skills Intelligence — saved plan
+
+**Career Center settings are wired** as the first test in `tests/API/Skill/skillsIntelligence.spec.js`, command `enableSkillsIntelligenceSettings` (`@skillsIntelligenceSettings`). Job role import, count, and publish live in that same file and each npm uses `--grep`. The learner steps below are still waiting on pasted APIs. Follow `framework-standards.mdc` + `rules-md`. Do not run org-mutating scripts unless the user asks. This is not AI Coach, CAISY, AI Assistant, Skills Activity, or Skills Discovery.
+
+Chats: [docs + product map](ca3ad8f2-7c7a-4e7e-acb9-aa74fa9d76dd). AI Coach pattern: [`.cursor/rules/ai-coach-dashboard.mdc`](ai-coach-dashboard.mdc).
+
+**Job role sheet — classification column.** For a new site, put numbers in `classification`, not words. The import template is fixed: 1 Support, 2 Professional, 3 Management, 4 Executive. The script sends that number as-is. A word such as Management is only used when the site already returns a name-to-number list from `kgGetRoleClassifications` (`POST {site}/talent-intelligence/knowledge-graph/api/graphql`). A new site can return an empty list. testsi did that, so `customJobRoles.csv` (words) failed and `testsi.csv` (numbers) imported. Keep the word file for a site that already has the list, such as pre-sales. For the next new site, copy the data and use 1, 2, 3, and 4.
+
+**Status (save point):** Career Center settings are wired. Jonathan is done in `testData/skillIntelligence/skillsIntelligencePersonas.json` (`Jonathan_Tan`). The test SI run lives in `skillsIntelligencePersonasTestsi.json`. The spec reads that file. Fake logins: Savion_Rau_1 is Jonathan_Tan, Okey_Kohler_2 is Raja_Reid, Susan_Yost_3 is Isabella_Garcia, Kyleigh_Ullrich_4 is Carolyn_Stephenson, Antoinette_Volkman_1 is James_Graves. Each object is its own parallel test: learner token, current role, next role, all five focus skills on each role, then a rating on each focus skill that is not 0. A skill rated 0 is saved and not rated. Then benchmarks, then courses. A failed step is logged and that learner continues. A benchmark with no content-site answers is skipped. Do not run `createSkillsIntelligencePersonaData` unless the user asks.
+
+---
+
+## Docs
+
+**AI Coach (same help site):**
+
+- Learner: https://documentation.skillsoft.com/en_us/percipio/Content/B_Learner/AICoach/lrnr_AIcoach_home.htm
+- Admin dashboard: https://documentation.skillsoft.com/en_us/percipio/Content/A_Administrator/admn_dash_ai_coach.htm
+
+**Skills Intelligence named pages** (Career Center, Skills Insights, Skills Foundation Roles) are **not published** yet (404). Closest published pages: Role and Skill Ratings, Job Role FAQ. Product map for later phases comes from the demo video + narration in the chat above.
+
+---
+
+## Later (keep — do not build yet)
+
+Full closed loop, same shape as AI Coach (settings + default users + `USERCOUNT` pool):
+
+| Surface | Who | What must look filled |
+|---|---|---|
+| Skills Foundation → Roles | Admin | Role library, AI-suggested focus + role skills |
+| Skills Insights Dashboard | Admin | Readiness %, above / on / gap, filters, Skill Details, Actions |
+| Career Center / Explorer | Learner | Current role, Career Agent, promotional vs lateral, aspirational role |
+| Role page | Learner | Adaptive path, skill-readiness donut, focus skills vs targets |
+
+Out of seed: Integration Studio. `USERCOUNT` mix (A–F, ~85% readiness) stays in chat until default-user slice is done.
+
+Proposed commands later (names not wired): `enableSkillsIntelligenceSettings`, `createDataInSkillsIntelligenceForDefaultUsers`, `createDataInSkillsIntelligenceDashboard`, `fullSkillsIntelligenceCommand`.
+
+---
+
+## Now — sixteen default users (flow)
+
+Touch **personal / default users only**. All **16** in `testData/usersData/defaultUsers.json`. Look up each login in this org. Log misses. Continue with who is left. **None found → skip.** Do not substitute random learners.
+
+**Order (mandatory).** Each step waits for the APIs/UUIDs the user pastes. Never hardcode uuids in testData — fetch at runtime.
+
+1. **Get role UUIDs** — search/list by the JSON `jobRole` **name**. Keep `jobRoleUuid` (and aspirational uuid when that call exists).
+2. **Assign current role** for that login.
+3. **Assign aspiration role** for that login.
+4. **Fetch the 20 skills** mapped to that role (API the user will paste).
+5. **Edit focus skills** — the role comes with **three default** focus skills; we change them so the demo looks right (API the user will paste). Pick from the 20, not random catalog names.
+6. **Complete course(s)** — reuse existing completion (`courseCompletion.spec.js` / `contentCompletionUrl`). User pastes the course UUID(s); script **fetches the live UID**. **One learner only** — the login/user id the user names. Do not complete courses for the other 15.
+7. **Skill measurements** (skill benchmarks) — reuse `getAnswersFromCp` + `submitChallengeApi` (same path as `skillBenchMarkApi.spec.js` / `skillBenchMarkDataForDefaultUsers.spec.js`). User pastes the measurement UUID(s) to complete. Do not invent benchmark ids.
+
+Password from config unless the row has `passWord`. Learner token per user for role/skill calls. Admin token only if a listed API needs it.
+
+**Current role** for the five workbook people comes from the sheet, not from `jobRole` in `defaultUsers.json`. Jonathan is the only finished sheet: Marketing Associate, then Product Marketing Manager. The other four sheets are not finished. The other 11 people still use `jobRole` in the user file until a sheet exists.
+
+`createSkillsIntelligencePersonaData` signs in as `loginName`. Jonathan stays in `skillsIntelligencePersonas.json`. The current run reads `skillsIntelligencePersonasTestsi.json`. `realLoginName` on each row is the demo login to use after the practice run is checked.
+
+**Focus skills to set** = TBD until the user names them (or “replace the three defaults with these three from the 20”).
+
+**Course login** = TBD (single user). **Course UUID(s)** and **skill-measurement UUID(s)** = TBD.
+
+| Login | Current `jobRole` | Aspiration |
+|---|---|---|
+| Fergus_Tyler | IT Director | TBD |
+| Carolyn_Stephenson | Learning and Development Specialist | TBD |
+| Libby_Bright | Learning and Development Specialist | TBD |
+| Raheem_Ahmed | Infrastructure Engineer | TBD |
+| Isabella_Garcia | Data Architect | TBD |
+| Anna_Cole | IT Support Specialist | TBD |
+| Ronald_Chen | Software Engineer | TBD |
+| Alisa_Massey | Software Engineer | TBD |
+| Linda_Cole | Retail Sales Associate | TBD |
+| James_Graves | Sales Associate | TBD |
+| Roseanna_Mcgowan | Production Operations Associate | TBD |
+| Peter_Gill | Health and Safety Coordinator | TBD |
+| Jonathan_Tan | Customer Success Manager | TBD |
+| Raja_Reid | Channel Sales Manager | TBD |
+| Patrick_Stephenson | Sales Director | TBD |
+| May_Donovan | VP Technology | TBD |
+
+**Existing code (do not reuse until the user confirms the pasted call is the same):** `getPrimaryJobRoleApi`, `getAspirationJobRolesApi`, `setPrimaryJobRoleApi`, `setAspirationJobRoleApi`, `roleFocusedSkillsExtractionApi`, `rateSkillApi` in `addRoleandAspirationRole.spec.js`. Course grant: `contentCompletionUrl`. Benchmarks: `getAnswersFromCp` in `skillBenchMarkApi.spec.js`. If the pasted APIs differ, new payload + apibuilder; do **not** change those shared builders for this spec.
+
+**When APIs arrive:** paste into this file (URL, method, who, body, keep/returns). Then implement: testData under `testData/skillIntelligence/` (names only, no UUIDs) → spec → path.js → package.json + Jenkins + CSV. Import only `path.js`.
+
+---
+
+## APIs (fill as the user pastes)
+
+| # | Call | Need | Keep / returns | Fills |
+|---|---|---|---|---|
+| 0 | `PATCH /api/ucm/settings/org-settings` | Admin. Career Center keys only | — | Feature on. Wired. |
+| 1 | `POST /api/graphql3?query=primaryJobRolesFromDBKg` | Learner. Custom roles only | `jobRoleUuid` by exact name | Wired. `searchCustomJobRolesApi` |
+| 2 | `POST /api/graphql3` `saveUserJobRoleV2` | Learner. Order 1 current, order 2 next | — | Wired. `saveLearnerJobRoleApi`. Do not use the old set-primary call |
+| 3 | Same save as #2 with order 2 | Learner + next-role uuid | — | Wired in the same call |
+| 4 | `POST /api/graphql3?query=roleInfoWithSkillsKg` | Learner + role id from search | skill `id` and `name` | Wired. `roleSkillsKgApi` |
+| 5 | `POST /api/graphql3` `saveAllKGFocusSkills` | Learner. role id + all five skill ids from #4, including rating 0 | — | Wired. `saveFocusSkillsKgApi` |
+| 5b | `POST /api/graphql3` `updateUserKGSkillRatings` | Learner. One focus skill per call. Do not send rating 0 | — | Wired. `rateFocusSkillKgApi`. Do not use the old `rateSkillApi` |
+| 6 | Existing course completion | Course ids on the persona row. Videos inside the course are what get completed | — | Wired in the persona spec |
+| 7 | Existing skill measurement (CP answers) | Benchmark ids on the persona row. Score band Proficient | — | Wired in the persona spec |
+
+**On the role page, not used for the checklist yet:** `userJobRoles`, `skilzIsMentor`, `userKGRoleAndRatedSkills`, `userKGFocusSkills`, `skilzKGFocusSkillsByUserActivity`, `insGetUserSkillProficiencies`. Recommended content (`skilzKGSkillBasedRecommendationsQuery`, `getAssetStatus`) stays out. Tracking calls stay out.
